@@ -40,8 +40,6 @@
 </template>
 
 <script>
-import { useStore } from 'vuex'
-
 export default {
   data() {
     return {
@@ -52,19 +50,15 @@ export default {
       errors: {}
     }
   },
-  setup() {
-    const store = useStore()
-    
-    const login = async () => {
+  methods: {
+    async login() {
       try {
-        await store.dispatch('auth/login', this.form)
+        await this.$store.dispatch('auth/login', this.form)
         this.$router.push({ name: 'dashboard' })
       } catch (error) {
         this.errors = error
       }
     }
-    
-    return { login }
   }
 }
 </script>
