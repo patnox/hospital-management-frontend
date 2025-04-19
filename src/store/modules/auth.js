@@ -21,16 +21,18 @@ const mutations = {
 const actions = {
   async login({ commit }, credentials) {
     try {
-      const response = await axios.post('/api/login', credentials)
-      const token = response.data.access_token
+      const response = await axios.post('/api/login', credentials);
+      const token = response.data.access_token;
       
-      localStorage.setItem('token', token)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
-      commit('setUser', response.data.user)
-      return response
+      commit('setUser', response.data.user);
+      console.log("Trying Login: Current token: " + localStorage.getItem('token'));
+
+      return response;
     } catch (error) {
-      throw error.response.data
+      throw error.response.data;
     }
   },
   
@@ -51,8 +53,11 @@ const actions = {
   
   async logout({ commit }) {
     try {
+      console.log("Trying Logout: Current token: " + localStorage.getItem('token'));
+      const token = localStorage.getItem('token');
+
       await axios.post('/api/logout', {}, {
-        headers: { Authorization: `Bearer ${state.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       })
       
       localStorage.removeItem('token')

@@ -23,7 +23,7 @@
                     :key="availability?.id"
                     :value="availability?.doctor_id"
                   >
-                    Dr. {{ availability?.doctor_name }} ({{ availability?.doctor_specialization }})
+                   {{ availability?.doctor_name }} ({{ availability?.doctor_specialization }})
                   </option>
                 </select>
                 <div class="invalid-feedback" v-if="errors?.doctor_id">{{ errors?.doctor_id }}</div>
@@ -31,7 +31,7 @@
               <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
                 <input 
-                  type="date" 
+                  type="datetime-local" 
                   id="date" 
                   class="form-control" 
                   v-model="form.scheduled_time"
@@ -59,8 +59,8 @@
               >
                 <div class="d-flex justify-content-between">
                   <div>
-                    <h5 class="mb-1">Dr. {{ appointment.doctor.name }}</h5>
-                    <p class="mb-1">Specialization: {{ appointment.doctor.specialization }}</p>
+                    <h5 class="mb-1">Doctor: {{ appointment.doctor_name }}</h5>
+                    <p class="mb-1">Specialization: {{ appointment.doctor_specialization }}</p>
                     <p class="mb-1">Date: {{ appointment.scheduled_time }}</p>
                     <p class="mb-1">Status: {{ appointment.status }}</p>
                   </div>
@@ -105,21 +105,9 @@ export default {
     // Call getAvailability and patient id when component mounts
     onMounted(() => {
       // Get availability
-      store.dispatch('appointments/getAvailability')
-
-      // Get patient id
-      // async () => {
-      //   if (currentUser?.value?.id) {
-      //     try {
-      //       console.log("Getting patient id using user id")
-      //       const response = await axios.get(`/api/patients/user/${currentUser.value.id}`)
-      //       form.value.patient_id = response.data.patient.id
-      //       console.log("Got patient id as: " + form.value.patient_id)
-      //     } catch (error) {
-      //       console.error('Error getting patient ID:', error)
-      //     }
-      //   }
-      // }
+      store.dispatch('appointments/getAvailability');
+      // Get appointments
+      store.dispatch('appointments/getAppointments');
     })
     
     const bookAppointment = async () => {
@@ -157,7 +145,7 @@ export default {
 
         await store.dispatch('appointments/bookAppointment', {
           doctor_id: form.value.doctor_id,
-          scheduled_time: form.value.scheduled_time,
+          scheduled_time: formatDatetime(form.value.scheduled_time),
           patient_id: form.value.patient_id
         })
 
@@ -168,8 +156,10 @@ export default {
         await store.dispatch('appointments/getAvailability')
       } catch (error) {
         if (error.response?.data?.errors) {
-          errors.value.form_submission_error = error.response.data.errors
+          errors.value.form_submission_error = JSON.stringify(error.response.data.errors);
+          console.error('Error booking appointment:', error.response.data.errors)
         } else {
+          errors.value.form_submission_error = JSON.stringify(error);
           console.error('Error booking appointment:', error)
         }
       }
@@ -182,6 +172,23 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    }
+
+    function formatDatetime(datetimeValue) {
+      if (!datetimeValue) return '';
+      const date = new Date(datetimeValue);
+      if (isNaN(date.getTime())) return '';
+
+      const pad = (n) => (n < 10 ? '0' + n : n);
+
+      const Y = date.getFullYear();
+      const m = pad(date.getMonth() + 1);
+      const d = pad(date.getDate());
+      const H = pad(date.getHours());
+      const i = pad(date.getMinutes());
+      const s = pad(date.getSeconds());
+
+      return `${Y}-${m}-${d} ${H}:${i}:${s}`;
     }
     
     return {
