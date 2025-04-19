@@ -34,6 +34,7 @@ const actions = {
       const response = await axios.get('/api/appointments/availability', {
         params: params
       })
+      // console.log("Got availability as: " + JSON.stringify(response, null, 2));
       commit('setAvailability', response.data.availability)
       return response
     } catch (error) {
@@ -62,6 +63,7 @@ const actions = {
 }
 
 export default {
+  namespaced: true,
   state,
   mutations,
   actions
