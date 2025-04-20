@@ -11,9 +11,9 @@
               <div class="col-md-4">
                 <div class="card mb-3">
                   <div class="card-body">
-                    <h5 class="card-title">Welcome, {{ currentUser.name }}</h5>
-                    <p class="card-text">Role: {{ currentUser.role }}</p>
-                    <p class="card-text">Email: {{ currentUser.email }}</p>
+                    <h5 class="card-title">Welcome, {{ currentUser?.name }}</h5>
+                    <p class="card-text">Role: {{ currentUser?.role }}</p>
+                    <p class="card-text">Email: {{ currentUser?.email }}</p>
                   </div>
                 </div>
               </div>
@@ -25,21 +25,21 @@
                       <router-link 
                         :to="{ name: 'appointments' }" 
                         class="btn btn-primary"
-                        v-if="currentUser.role === 'patient'"
+                        v-if="currentUser?.role === 'patient'"
                       >
                         Book Appointment
                       </router-link>
                       <router-link 
                         :to="{ name: 'doctor-appointments' }" 
                         class="btn btn-primary"
-                        v-if="currentUser.role === 'doctor'"
+                        v-if="currentUser?.role === 'doctor'"
                       >
                         View Appointments
                       </router-link>
                       <router-link 
                         :to="{ name: 'appointments' }" 
                         class="btn btn-primary"
-                        v-if="currentUser.role === 'admin'"
+                        v-if="currentUser?.role === 'admin'"
                       >
                         Manage Appointments
                       </router-link>
@@ -65,7 +65,9 @@ export default {
     
     const currentUser = computed(() => store.state.auth.user)
     
-    return { currentUser }
+    return { 
+      currentUser
+    }
   }
 }
 </script>
