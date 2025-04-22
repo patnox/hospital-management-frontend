@@ -49,6 +49,7 @@ export default {
     
     const logout = async () => {
       await store.dispatch('auth/logout')
+      console.log("Redirecting to login page");
       window.location.href = '/login'
     }
     

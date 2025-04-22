@@ -266,7 +266,8 @@ export default {
         store.dispatch('appointments/getAvailability');
 
       } catch (error) {
-        console.error('Error creating appointment:', error)
+        showCreateModal.value = false;
+        console.error('Error creating appointment: ', error)
       }
     }
     
