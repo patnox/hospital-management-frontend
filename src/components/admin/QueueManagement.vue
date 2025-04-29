@@ -104,6 +104,8 @@ const doctors = computed(() => store.state.doctors)
 const loading = computed(() => store.state.loading)
 const error = computed(() => store.state.error)
 
+const errors = ref({})
+
 const filters = ref({
     doctorId: '',
     page: 1,
