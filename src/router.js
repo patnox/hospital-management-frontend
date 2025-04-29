@@ -16,6 +16,12 @@ const routes = [
     path: '/register',
     name: 'register',
     component: () => import('@/components/auth/Register.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/registerpatient',
+    name: 'registerpatient',
+    component: () => import('@/components/auth/RegisterPatient.vue'),
     meta: { requiresAuth: false }
   },
   {
@@ -37,10 +43,52 @@ const routes = [
     meta: { requiresAuth: true, roles: ['doctor'] }
   },
   {
+    path: '/appointments/admin',
+    name: 'appointments-admin',
+    component: () => import('@/components/admin/AppointmentsManagement.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/queue/doctor',
+    name: 'doctor-queue',
+    component: () => import('@/views/DoctorDashboard.vue'),
+    meta: { requiresAuth: true, roles: ['doctor'] }
+  },
+  {
+    path: '/queue/admin',
+    name: 'queue-admin',
+    component: () => import('@/components/admin/QueueManagement.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
     path: '/queue',
     name: 'queue',
     component: () => import('@/components/queue/QueueStatus.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/doctors',
+    name: 'admindoctors',
+    component: () => import('@/components/admin/DoctorsManagement.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/admin/doctors/availability',
+    name: 'admindoctorsavailability',
+    component: () => import('@/components/admin/AvailabilityManagement.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/admin/patients',
+    name: 'adminpatients',
+    component: () => import('@/components/admin/PatientsManagement.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/admin/users',
+    name: 'adminusers',
+    component: () => import('@/components/admin/UsersManagement.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
   }
 ]
 

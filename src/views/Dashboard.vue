@@ -37,7 +37,14 @@
                         View Appointments
                       </router-link>
                       <router-link 
-                        :to="{ name: 'appointments' }" 
+                        :to="{ name: 'doctor-queue' }" 
+                        class="btn btn-primary"
+                        v-if="currentUser?.role === 'doctor'"
+                      >
+                        View Your Queue
+                      </router-link>
+                      <router-link 
+                        :to="{ name: 'appointments-admin' }" 
                         class="btn btn-primary"
                         v-if="currentUser?.role === 'admin'"
                       >

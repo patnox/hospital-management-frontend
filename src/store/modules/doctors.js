@@ -31,13 +31,22 @@ const mutations = {
 };
 
 const actions = {
-    async fetchDoctors({ commit }) {
+    async fetchDoctors({ commit }, filters) {
         commit('SET_LOADING', true);
+
+        let url = '/api/doctors';
+        if(filters) {
+            url = `/api/doctors?page=${filters?.page}&perPage=${filters?.perPage}`;
+            if (filters?.search) {
+                url += `&name=${encodeURIComponent(filters?.search)}`;
+            }
+        }
         
         try {
-            const response = await axios.get('/api/doctors');
+            const response = await axios.get(url);
             commit('SET_DOCTORS', response.data);
             commit('SET_ERROR', null);
+            return response.data;
         } catch (error) {
             commit('SET_ERROR', error.message);
         } finally {
@@ -90,13 +99,17 @@ const actions = {
 
     async updateDoctor({ commit }, { doctorId, doctorData }) {
         commit('SET_LOADING', true);
-        
+        console.log("Received Doctors id as: " + JSON.stringify(doctorId));
         try {
-            const response = await axios.put(`/api/doctors/${doctorId}`, doctorData);
+            let url = '/api/doctors/' + doctorId;
+            console.log("Update Doctor URL is: " + JSON.stringify(url));
+            console.log("Update Doctor Data is: " + JSON.stringify(doctorData));
+            const response = await axios.put(url, doctorData);
             // Handle success case
             commit('SET_ERROR', null);
             return response.data;
         } catch (error) {
+            console.log("ERROR: Update Doctor error is: " + JSON.stringify(error));
             commit('SET_ERROR', error.message);
             throw error;
         } finally {

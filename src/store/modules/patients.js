@@ -23,12 +23,20 @@ const mutations = {
 }
 
 const actions = {
-    async fetchPatients({ commit }) {
+    async fetchPatients({ commit }, filters) {
         commit('SET_LOADING', true)
-        commit('SET_ERROR', null)
+        commit('SET_ERROR', null);
+
+        let url = '/api/patients';
+        if(filters) {
+            url = `/api/patients?page=${filters?.page}&perPage=${filters?.perPage}`;
+            if (filters?.search) {
+                url += `&name=${encodeURIComponent(filters?.search)}`;
+            }
+        }
 
         try {
-            const response = await axios.get('/api/patients')
+            const response = await axios.get(url)
             commit('SET_PATIENTS', response.data)
             commit('SET_LOADING', false)
             return response.data
@@ -68,18 +76,16 @@ const actions = {
     }
   },
 
-  async updatePatient({ commit }, { id, patientData }) {
+  async updatePatient({ commit }, { patientId, patientData }) {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
 
     try {
-      const response = await axios.put(`/api/patients/${id}`, patientData)
-      const index = state.patients.findIndex(p => p.id === id)
-      if (index !== -1) {
-        state.patients.splice(index, 1, response.data)
-      }
-      commit('SET_LOADING', false)
-      return response.data
+      const response = await axios.put(`/api/patients/${patientId}`, patientData);
+      commit('SET_LOADING', false);
+      // Handle success case
+      commit('SET_ERROR', null);
+      return response.data;
     } catch (error) {
       commit('SET_ERROR', error.response?.data?.message || error.message)
       commit('SET_LOADING', false)
@@ -93,7 +99,7 @@ const actions = {
 
     try {
       await axios.delete(`/api/patients/${id}`)
-      commit('SET_PATIENTS', state.patients.filter(p => p.id !== id))
+      // commit('SET_PATIENTS', state.patients.filter(p => p.id !== id));
       commit('SET_LOADING', false)
     } catch (error) {
       commit('SET_ERROR', error.response?.data?.message || error.message)
